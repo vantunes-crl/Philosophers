@@ -7,18 +7,23 @@
 #include <unistd.h>
 #include <string.h>
 
-typedef struct s_philo
+typedef struct s_data
 {
     int num_of_philo;
     int time_to_die;
     int time_to_eat;
     int time_to_sleep;
     int num_times_eat;
-    int philo_id;
     pthread_mutex_t *forks;
     pthread_t   *th_id;
 
-}              t_philo;
+}              t_data;
+
+typedef struct s_content
+{
+    t_data  *data;
+    int     philo_id;
+}              t_content;
 
 void	ft_bzero(void *s, size_t n);
 int     ft_atoi(const char *str);
