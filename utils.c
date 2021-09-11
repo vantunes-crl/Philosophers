@@ -40,3 +40,18 @@ void	ft_bzero(void *s, size_t n)
 		i++;
 	}
 }
+
+long	chronometer(void)
+{
+	struct timeval		time;
+	static time_t		start_sec = 0;
+	static suseconds_t	start_micro_sec = 0;
+
+	gettimeofday(&time, NULL);
+	if (!start_sec)
+	{
+		start_sec = time.tv_sec;
+		start_micro_sec = time.tv_usec;
+	}
+	return (((time.tv_sec - start_sec) * 1000) + (time.tv_usec - start_micro_sec) / 1000);
+}

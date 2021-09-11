@@ -1,35 +1,29 @@
 #include "philo.h"
 
-void *eating(t_data *data)
-{
-    long		t_start;
-
-	t_start = timer();
-
-    while (timer() - t_start < data->time_to_eat)
-    {
-        usleep(100);
-    }
-}
-
 void *routine(void *arg)
 {
     t_data *data;
     int index;
     int  times_to_eat;
+    long int time;
 
     data = ((t_content *)arg)->data;
     index = ((t_content *)arg)->philo_id;
     times_to_eat = data->num_times_eat;
     while (times_to_eat--)
-    {
-        printf ("Philosopher %d is thinking\n", index);
+    {   
         pthread_mutex_lock(&data->forks[index]);
         pthread_mutex_lock(&data->forks[(index + 1) % 5]);
-        printf ("Philosopher %d is eating\n",index);
+        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\ttake the fork\n", chronometer(), index);
+        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tis eating\n", chronometer(), index);
+        time = chronometer();
+        while (chronometer() - time < data->time_to_eat);
         pthread_mutex_unlock(&data->forks[index]);
         pthread_mutex_unlock(&data->forks[(index + 1) % 5]);
-        printf ("Philosopher %d finished eating\n", index);
+        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tsleeping\n", chronometer(), index);
+        time = chronometer();
+        while (chronometer() - time < data->time_to_sleep);
+        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tthinking\n", chronometer(), index);
     }
     return (arg);
 }
@@ -45,6 +39,8 @@ void init_data(t_data *data, char **argv, int argc)
         data->num_times_eat = ft_atoi(argv[5]);
     data->th_id = malloc(sizeof(pthread_t) * data->num_of_philo);
     data->forks = malloc(sizeof(pthread_mutex_t) * data->num_of_philo);
+    data->lock = malloc(sizeof(int) * data->num_of_philo);
+    data->time = malloc(sizeof(long int) * data->num_of_philo);
 }
 
 t_content *init_content(t_data *data, int index)
@@ -71,7 +67,11 @@ int main(int argc, char **argv)
     init_data(&data, argv, argc);
     i = -1;
     while (++i < data.num_of_philo)
+    {
         pthread_mutex_init(&data.forks[i], NULL);
+        data.lock[i] = 0;
+        data.time[i] = 0;
+    }
     i = -1;
     while (++i < data.num_of_philo)
     {
