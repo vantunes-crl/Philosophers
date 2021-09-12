@@ -1,29 +1,49 @@
 #include "philo.h"
 
+int philo_died(int index, t_data *data, long time)
+{
+    if (chronometer() - time > data->time_to_die)
+    {
+        printf("%d morreu\n", index);
+        exit(1);
+    }
+    return (1);
+}
+
+int take_fork_eat(t_data *data, int index, long time)
+{
+    pthread_mutex_lock(&data->forks[index]);
+    pthread_mutex_lock(&data->forks[(index + 1) % 5]);
+    printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\ttake the fork\n", chronometer(), index);
+    printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tis eating\n", chronometer(), index);
+    philo_died(index, data, time);
+    time = chronometer();
+    while (chronometer() - time < data->time_to_eat);
+    pthread_mutex_unlock(&data->forks[index]);
+    pthread_mutex_unlock(&data->forks[(index + 1) % 5]);
+}
+
+int sleep_think(t_data *data, int index, long time)
+{
+    printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tsleeping\n", chronometer(), index);
+    while (chronometer() - time < data->time_to_sleep);
+    printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tthinking\n", chronometer(), index);
+}
+
 void *routine(void *arg)
 {
     t_data *data;
     int index;
     int  times_to_eat;
-    long int time;
-
+    long  time;
     data = ((t_content *)arg)->data;
     index = ((t_content *)arg)->philo_id;
     times_to_eat = data->num_times_eat;
     while (times_to_eat--)
     {   
-        pthread_mutex_lock(&data->forks[index]);
-        pthread_mutex_lock(&data->forks[(index + 1) % 5]);
-        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\ttake the fork\n", chronometer(), index);
-        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tis eating\n", chronometer(), index);
-        time = chronometer();
-        while (chronometer() - time < data->time_to_eat);
-        pthread_mutex_unlock(&data->forks[index]);
-        pthread_mutex_unlock(&data->forks[(index + 1) % 5]);
-        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tsleeping\n", chronometer(), index);
-        time = chronometer();
-        while (chronometer() - time < data->time_to_sleep);
-        printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tthinking\n", chronometer(), index);
+        take_fork_eat(data, index , time);
+        sleep_think(data, index, time);
+        
     }
     return (arg);
 }
@@ -39,8 +59,6 @@ void init_data(t_data *data, char **argv, int argc)
         data->num_times_eat = ft_atoi(argv[5]);
     data->th_id = malloc(sizeof(pthread_t) * data->num_of_philo);
     data->forks = malloc(sizeof(pthread_mutex_t) * data->num_of_philo);
-    data->lock = malloc(sizeof(int) * data->num_of_philo);
-    data->time = malloc(sizeof(long int) * data->num_of_philo);
 }
 
 t_content *init_content(t_data *data, int index)
@@ -67,11 +85,7 @@ int main(int argc, char **argv)
     init_data(&data, argv, argc);
     i = -1;
     while (++i < data.num_of_philo)
-    {
         pthread_mutex_init(&data.forks[i], NULL);
-        data.lock[i] = 0;
-        data.time[i] = 0;
-    }
     i = -1;
     while (++i < data.num_of_philo)
     {

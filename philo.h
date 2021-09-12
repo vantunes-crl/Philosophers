@@ -15,8 +15,6 @@ typedef struct s_data
     int time_to_eat;
     int time_to_sleep;
     int num_times_eat;
-    int *lock;
-    long int *time;
     pthread_mutex_t *forks;
     pthread_t       *th_id;
 
