@@ -55,3 +55,12 @@ long	chronometer(void)
 	}
 	return (((time.tv_sec - start_sec) * 1000) + (time.tv_usec - start_micro_sec) / 1000);
 }
+
+void action(int a, int index)
+{
+	if (a == 'e')
+	{
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\ttake the fork\n", chronometer(), index);
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tis eating\n", chronometer(), index);
+	}
+}

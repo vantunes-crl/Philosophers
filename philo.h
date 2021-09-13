@@ -15,6 +15,7 @@ typedef struct s_data
     int time_to_eat;
     int time_to_sleep;
     int num_times_eat;
+    long *meals;
     pthread_mutex_t *forks;
     pthread_t       *th_id;
 
@@ -24,12 +25,15 @@ typedef struct s_content
 {
     t_data  *data;
     int     philo_id;
-    long    time;
+    long    last_meal;
 }              t_content;
 
 void	ft_bzero(void *s, size_t n);
 int     ft_atoi(const char *str);
 void    error(char *str);
 long	chronometer(void);
+void    init_data(t_data *data, char **argv, int argc);
+t_content *init_content(t_data *data, int index);
+void action(int a, int index);
 
 #endif
