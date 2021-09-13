@@ -12,6 +12,7 @@ void init_data(t_data *data, char **argv, int argc)
     data->th_id = malloc(sizeof(pthread_t) * data->num_of_philo);
     data->forks = malloc(sizeof(pthread_mutex_t) * data->num_of_philo);
 	data->meals = malloc(sizeof(long) * data->num_of_philo);
+    data->is_dead = 0;
 }
 
 t_content *init_content(t_data *data, int index)

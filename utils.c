@@ -58,9 +58,15 @@ long	chronometer(void)
 
 void action(int a, int index)
 {
-	if (a == 'e')
+	if (a == 'f')
 	{
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\ttake the fork\n", chronometer(), index);
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\tis eating\n", chronometer(), index);
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;31mtake the fork\n", chronometer(), index);
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;31mtake the fork\n", chronometer(), index);
 	}
+	else if (a == 's')
+		printf("\033[0;33m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;35mstart sleep\n", chronometer(), index);
+	else if (a == 'e')
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;37mis eating\n", chronometer(), index);
+	else if (a == 't')
+		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;36mis thinking\n", chronometer(), index);
 }
