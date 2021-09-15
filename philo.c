@@ -5,6 +5,7 @@ int	is_dead(t_data *data, int index)
 	pthread_mutex_lock(&data->dead);
 	if (chronometer() - data->meals[index] > data->time_to_die && !data->is_dead)
 	{
+		usleep(100);
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE RED "\tdied..\n" CLOSE, chronometer(), index);
 		data->is_dead = 1;
 		pthread_mutex_unlock(&data->forks[index]);
@@ -90,6 +91,7 @@ void *routine(void *arg)
 		if(!data->is_dead)
 			action('t', index, data);
 	}
+	free(arg);
 	return (NULL);
 }
 
@@ -121,5 +123,8 @@ int main(int argc, char **argv)
 	while (++i < data.num_of_philo)
 		pthread_mutex_destroy(&(data.forks[i]));
 	pthread_mutex_destroy(&(data.dead));
+	free(data.meals);
+	free(data.forks);
+	free(data.th_id);
 	return (0);
 }
