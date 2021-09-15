@@ -16,6 +16,8 @@
 #define BG "\033[1;36m"
 #define T "\033[1;37m"
 #define CLOSE "\033[0m"
+#define OK "\033[0;36m"
+
 typedef struct s_data
 {
 	int num_of_philo;
@@ -39,13 +41,22 @@ typedef struct s_content
 	long    last_meal;
 }              t_content;
 
+/* utils */
 void	    ft_bzero(void *s, size_t n);
 int         ft_atoi(const char *str);
-void        error(char *str);
+void		error(char *str, t_data *data);
 long	    chronometer(void);
+
+/* inits */
 void        init_data(t_data *data, char **argv, int argc);
 t_content   *init_content(t_data *data, int index);
+
+/* actions */
 void		action(int a, int index,t_data *data);
+int			start_sleep(t_data *data, int index);
+int			is_dead(t_data *data, int index);
+int			start_eat(t_data *data, int index);
+int			take_fork(void *arg, t_data *data, int index);
 int			start_sleep(t_data *data, int index);
 
 #endif

@@ -1,8 +1,14 @@
 #include "philo.h"
 
-void error(char *str)
+void error(char *str,t_data *data)
 {
     printf("%s\n", str);
+	if (data->meals)
+		free(data->meals);
+	if (data->forks)
+		free(data->forks);
+	if (data->th_id)
+		free(data->th_id);
     exit(1);
 }
 
@@ -58,15 +64,20 @@ long	chronometer(void)
 
 void action(int a, int index,t_data *data)
 {
-	if (a == 'f')
+	pthread_mutex_lock(&data->action);
+	usleep(100);
+	if (a == 'f' && !data->is_dead)
 	{
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
 	}
-	else if (a == 's')
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
-	else if (a == 'e')
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
-	else if (a == 't')
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
+	else if (a == 's' && !data->is_dead)
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
+	else if (a == 'e' && !data->is_dead)
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
+	else if (a == 't' && !data->is_dead)
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
+	else if (a == 'd' && !data->is_dead)
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE OK "\tis satisfied\n" CLOSE, chronometer(), index);
+	pthread_mutex_unlock(&data->action);
 }
