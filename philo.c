@@ -3,9 +3,9 @@
 int	is_dead(t_data *data, int index)
 {
 	pthread_mutex_lock(&data->dead);
-	if (chronometer() - data->meals[index] > data->time_to_die && !data->is_dead)
+	if (chronometer() > data->time_to_die && !data->is_dead)
 	{
-		printf("philo %d died at %ld\n", index, chronometer());
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE RED "\tdied..\n" CLOSE, chronometer(), index);
 		data->is_dead = 1;
 		pthread_mutex_unlock(&data->forks[index]);
 		pthread_mutex_unlock(&data->forks[(index + 1) % 5]);
@@ -13,8 +13,10 @@ int	is_dead(t_data *data, int index)
 		return 1;
 	}
 	else
+	{
 		pthread_mutex_unlock(&data->dead);
-	return (0);
+		return (0);
+	}
 }
 
 int start_eat(t_data *data, int index)
@@ -26,12 +28,11 @@ int start_eat(t_data *data, int index)
 	if (is_dead(data, index))
 		return 1;
 	if(!data->is_dead)
-		action('e', index);
+		action('e', index, data);
 	while (chronometer() - time_start < data->time_to_eat)
 	{
 		if (is_dead(data, index))
 			return (1);
-		usleep(100);
 	}
 	return (0);
 }
@@ -43,8 +44,7 @@ int take_fork(void *arg, t_data *data, int index)
 	if (is_dead(data, index))
 		return 1;
 	if(!data->is_dead)
-		action('f', index);
-	usleep(100);
+		action('f', index, data);
 	if (!data->is_dead)
 		start_eat(data, index);
 	pthread_mutex_unlock(&data->forks[index]);
@@ -60,12 +60,11 @@ int start_sleep(t_data *data, int index)
 	if (is_dead(data, index))
 		return 1;
 	if(!data->is_dead)
-		action('s', index);
+		action('s', index, data);
 	while (chronometer() - time_start < data->time_to_sleep)
 	{
 		if (is_dead(data, index))
 			return 1;
-		usleep(100);
 	}
 	return (0);
 }
@@ -84,9 +83,10 @@ void *routine(void *arg)
 			break ;
 		if (start_sleep(data, index))
 			break ;
+		if (is_dead(data, index))
+			break ;
 		if(!data->is_dead)
-			action('t', index);
-		usleep(100);
+			action('t', index, data);
 	}
 	return (NULL);
 }
@@ -105,6 +105,7 @@ int main(int argc, char **argv)
 	while (++i < data.num_of_philo)
 		pthread_mutex_init(&data.forks[i], NULL);
 	pthread_mutex_init(&data.dead, NULL);
+	pthread_mutex_init(&data.action, NULL);
 	i = -1;
 	while (++i < data.num_of_philo)
 	{

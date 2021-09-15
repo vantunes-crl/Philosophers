@@ -56,17 +56,17 @@ long	chronometer(void)
 	return (((time.tv_sec - start_sec) * 1000) + (time.tv_usec - start_micro_sec) / 1000);
 }
 
-void action(int a, int index)
+void action(int a, int index,t_data *data)
 {
 	if (a == 'f')
 	{
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;31mtake the fork\n", chronometer(), index);
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;31mtake the fork\n", chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
 	}
 	else if (a == 's')
-		printf("\033[0;33m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;35mstart sleep\n", chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
 	else if (a == 'e')
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;37mis eating\n", chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
 	else if (a == 't')
-		printf("\033[0;32m%ld\033[0m\t\033[0;34mPhilo %d\033[0m\t\033[1;36mis thinking\n", chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo %d" CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
 }
