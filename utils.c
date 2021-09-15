@@ -1,15 +1,15 @@
 #include "philo.h"
 
-void error(char *str,t_data *data)
+void	error(char *str, t_data *data)
 {
-    printf("%s\n", str);
+	printf("%s\n", str);
 	if (data->meals)
 		free(data->meals);
 	if (data->forks)
 		free(data->forks);
 	if (data->th_id)
 		free(data->th_id);
-    exit(1);
+	return ;
 }
 
 int	ft_atoi(const char *str)
@@ -59,25 +59,32 @@ long	chronometer(void)
 		start_sec = time.tv_sec;
 		start_micro_sec = time.tv_usec;
 	}
-	return (((time.tv_sec - start_sec) * 1000) + (time.tv_usec - start_micro_sec) / 1000);
+	return (((time.tv_sec - start_sec) * 1000)
+		+ (time.tv_usec - start_micro_sec) / 1000);
 }
 
-void action(int a, int index,t_data *data)
+void	action(int a, int index, t_data *data)
 {
 	pthread_mutex_lock(&data->action);
 	usleep(100);
 	if (a == 'f' && !data->is_dead)
 	{
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
 	}
 	else if (a == 's' && !data->is_dead)
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
 	else if (a == 'e' && !data->is_dead)
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
 	else if (a == 't' && !data->is_dead)
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
 	else if (a == 'd' && !data->is_dead)
-		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE OK "\tis satisfied\n" CLOSE, chronometer(), index);
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
+			CLOSE OK "\tis satisfied\n" CLOSE, chronometer(), index);
 	pthread_mutex_unlock(&data->action);
 }
