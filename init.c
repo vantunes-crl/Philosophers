@@ -1,7 +1,39 @@
 #include "philo.h"
 
+int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	return (0);
+}
+
+int	check_caracters(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (argv[i])
+	{
+		j = 0;
+		while (argv[i][j])
+		{
+			if (!ft_isdigit(argv[i][j]))
+			{
+				write(1, "Error\n", 6);
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
 void init_data(t_data *data, char **argv, int argc)
 {
+    if (check_caracters(argv))
+        return ;
     data->num_of_philo = ft_atoi(argv[1]);
     data->time_to_die = ft_atoi(argv[2]);
     data->time_to_eat = ft_atoi(argv[3]);
