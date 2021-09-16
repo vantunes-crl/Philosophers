@@ -45,6 +45,18 @@ void	mutex_destroy(t_data *data)
 		error("destroy thread", data);
 }
 
+void	ft_join(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->num_of_philo)
+	{
+		if (pthread_join(data->th_id[i], NULL) != 0)
+			error("join thread", data);
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_data		data;
@@ -53,7 +65,10 @@ int	main(int argc, char **argv)
 
 	memset(&data, 0, sizeof(data));
 	if (argc != 5 && argc != 6)
+	{
 		error("Invalid number of args", &data);
+		return (-1);
+	}
 	init_data(&data, argv, argc);
 	mutex_init(&data);
 	i = -1;
@@ -64,12 +79,7 @@ int	main(int argc, char **argv)
 				&routine, (void *)content) != 0)
 			error("create thread", &data);
 	}
-	i = -1;
-	while (++i < data.num_of_philo)
-	{
-		if (pthread_join(data.th_id[i], NULL) != 0)
-			error("join thread", &data);
-	}
+	ft_join(&data);
 	mutex_destroy(&data);
 	return (0);
 }

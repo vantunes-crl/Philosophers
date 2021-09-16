@@ -45,9 +45,17 @@ int	start_eat(t_data *data, int index)
 
 int	take_fork(void *arg, t_data *data, int index)
 {
+	if (data->num_of_philo == 1)
+	{
+		while (chronometer() < data->time_to_die)
+			;
+		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE RED
+			"\tdied..\n" CLOSE, chronometer(), index);
+		data->is_dead = 1;
+		return (0);
+	}
 	pthread_mutex_lock(&data->forks[index]);
-	if (data->num_of_philo > 1)
-		pthread_mutex_lock(&data->forks[(index + 1) % data->num_of_philo]);
+	pthread_mutex_lock(&data->forks[(index + 1) % data->num_of_philo]);
 	if (is_dead(data, index))
 		return (1);
 	if (!data->is_dead)
@@ -55,8 +63,7 @@ int	take_fork(void *arg, t_data *data, int index)
 	if (!data->is_dead)
 		start_eat(data, index);
 	pthread_mutex_unlock(&data->forks[index]);
-	if (data->num_of_philo > 1)
-		pthread_mutex_unlock(&data->forks[(index + 1) % data->num_of_philo]);
+	pthread_mutex_unlock(&data->forks[(index + 1) % data->num_of_philo]);
 	return (0);
 }
 
