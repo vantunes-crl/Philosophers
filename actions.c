@@ -14,11 +14,11 @@
 
 int	is_dead(t_data *data, int index)
 {
+	usleep(200);
 	pthread_mutex_lock(&data->dead);
 	if (chronometer() - data->meals[index] > data->time_to_die
 		&& !data->is_dead)
 	{
-		usleep(500);
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
 			CLOSE RED "\tdied..\n" CLOSE, chronometer(), index);
 		data->is_dead = 1;
@@ -38,12 +38,8 @@ int	start_eat(t_data *data, int index)
 {
 	long	time_start;
 
-	time_start = 0;
 	time_start = chronometer();
 	data->meals[index] = time_start;
-	usleep(100);
-	if (is_dead(data, index))
-		return (1);
 	if (!data->is_dead)
 		action('e', index, data);
 	while (chronometer() - time_start < data->time_to_eat && !data->is_dead)
@@ -64,7 +60,7 @@ int	take_fork(void *arg, t_data *data, int index)
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d" CLOSE RED
 			"\tdied..\n" CLOSE, chronometer(), index);
 		data->is_dead = 1;
-		return (0);
+		return (1);
 	}
 	pthread_mutex_lock(&data->forks[index]);
 	pthread_mutex_lock(&data->forks[(index + 1) % data->num_of_philo]);
@@ -83,16 +79,14 @@ int	start_sleep(t_data *data, int index)
 {
 	long	time_start;
 
-	time_start = chronometer();
 	if (is_dead(data, index))
 		return (1);
 	if (!data->is_dead)
 		action('s', index, data);
-	while (chronometer() - time_start < data->time_to_sleep)
+	while (chronometer() - time_start < data->time_to_sleep && !data->is_dead)
 	{
 		if (is_dead(data, index))
 			return (1);
-		usleep(100);
 	}
 	return (0);
 }

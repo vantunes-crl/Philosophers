@@ -35,6 +35,7 @@ void	*routine(void *arg)
 			action('t', index, data);
 		usleep(100);
 	}
+	usleep(100);
 	if (!data->is_dead)
 		action('d', index, data);
 	free(arg);
