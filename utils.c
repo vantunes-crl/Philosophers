@@ -15,8 +15,6 @@
 void	error(char *str, t_data *data)
 {
 	printf("%s\n", str);
-	if (data->meals)
-		free(data->meals);
 	if (data->forks)
 		free(data->forks);
 	if (data->th_id)
@@ -77,24 +75,24 @@ long	chronometer(void)
 
 void	action(int a, int index, t_data *data)
 {
-	pthread_mutex_lock(&data->action);
 	usleep(100);
+	pthread_mutex_lock(&data->action);
 	if (a == 'f' && !data->is_dead)
 	{
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
-			CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+			CLOSE GREEN "\thas taken a fork\n" CLOSE, chronometer(), index);
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
-			CLOSE GREEN "\ttake the fork\n" CLOSE, chronometer(), index);
+			CLOSE GREEN "\thas taken a fork\n" CLOSE, chronometer(), index);
 	}
 	else if (a == 's' && !data->is_dead)
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
-			CLOSE BG "\tstart sleep\n" CLOSE, chronometer(), index);
+			CLOSE BG "\tis sleeping\n" CLOSE, chronometer(), index);
 	else if (a == 'e' && !data->is_dead)
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
-			CLOSE PUR "\tstart eat\n" CLOSE, chronometer(), index);
+			CLOSE PUR "\tis eating\n" CLOSE, chronometer(), index);
 	else if (a == 't' && !data->is_dead)
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
-			CLOSE T "\tstart think\n" CLOSE, chronometer(), index);
+			CLOSE T "\tis thinking\n" CLOSE, chronometer(), index);
 	else if (a == 'd' && !data->is_dead)
 		printf(BLUE "%ld" CLOSE YELL "\tPhilo\t%d"
 			CLOSE OK "\tis satisfied\n" CLOSE, chronometer(), index);

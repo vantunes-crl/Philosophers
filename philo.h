@@ -37,7 +37,6 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				num_times_eat;
-	long			*meals;
 	int				is_dead;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	dead;
@@ -60,16 +59,16 @@ void		error(char *str, t_data *data);
 long		chronometer(void);
 
 /* inits */
-void		init_data(t_data *data, char **argv, int argc);
+int			init_data(t_data *data, char **argv, int argc);
 t_content	*init_content(t_data *data, int index);
 void		mutex_init(t_data *data);
 
 /* actions */
 void		action(int a, int index, t_data *data);
-int			start_sleep(t_data *data, int index);
-int			is_dead(t_data *data, int index);
-int			start_eat(t_data *data, int index);
-int			take_fork(void *arg, t_data *data, int index);
-int			start_sleep(t_data *data, int index);
+int			start_sleep(void *content, t_data *data, int index);
+int			is_dead(void *content);
+int			death_handler(t_data *data, int index);
+int			start_eat(void *content, t_data *data, int index);
+int			take_fork(void *content, t_data *data, int index);
 
 #endif

@@ -12,33 +12,27 @@
 
 #include "philo.h"
 
-void	*routine(void *arg)
+void	*routine(void *content)
 {
 	t_data	*data;
 	int		index;
 	int		times_to_eat;
 
-	data = ((t_content *)arg)->data;
-	index = ((t_content *)arg)->philo_id;
+	data = ((t_content *)content)->data;
+	index = ((t_content *)content)->philo_id;
 	times_to_eat = data->num_times_eat;
 	while (times_to_eat--)
 	{
-		if (data->is_dead)
+		if (!take_fork(content, data, index))
 			break ;
-		if (take_fork(arg, data, index))
-			break ;
-		if (start_sleep(data, index))
-			break ;
-		if (is_dead(data, index))
+		if (!start_sleep(content, data, index))
 			break ;
 		if (!data->is_dead)
 			action('t', index, data);
-		usleep(100);
 	}
-	usleep(100);
 	if (!data->is_dead)
 		action('d', index, data);
-	free(arg);
+	free(content);
 	return (NULL);
 }
 
@@ -82,7 +76,8 @@ int	main(int argc, char **argv)
 		error("Invalid number of args", &data);
 		return (-1);
 	}
-	init_data(&data, argv, argc);
+	if (init_data(&data, argv, argc))
+		return (-1);
 	mutex_init(&data);
 	i = -1;
 	while (++i < data.num_of_philo)
